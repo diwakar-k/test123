@@ -5,18 +5,18 @@ resources:
   source:
     uri: https://github.com/diwakar-k/test
     branch: main
-- name: storage
-  type: s3
-  source:
-      # Name of the bucket in S3 account
-    bucket: rishi-demo
-    regexp: jars/springboot-concourse-(.*)-SNAPSHOT.jar
-    # versioned_file: repo/(*).txt
-    region_name: ap-south-1
-      # filename of the application to read/write in S3 (check S3 resource documentation for parameters) 
-      # AWS Credentials are passed in command line on set-pipeline. Concourse can also use an external vault system to store credentials
-    access_key_id: {{aws-access-key}}
-    secret_access_key: {{aws-secret-key}}
+# - name: storage
+#   type: s3
+#   source:
+#       # Name of the bucket in S3 account
+#     bucket: rishi-demo
+#     regexp: jars/springboot-concourse-(.*)-SNAPSHOT.jar
+#     # versioned_file: repo/(*).txt
+#     region_name: ap-south-1
+#       # filename of the application to read/write in S3 (check S3 resource documentation for parameters) 
+#       # AWS Credentials are passed in command line on set-pipeline. Concourse can also use an external vault system to store credentials
+#     access_key_id: {{aws-access-key}}
+#     secret_access_key: {{aws-secret-key}}
 
 jobs:
 - name: test-and-build
@@ -24,7 +24,7 @@ jobs:
   plan:
     - get: repo
       trigger: true
-    - get: storage
+    # - get: storage
     - task: run-test-and-build-jar-file
       config:
         platform: linux
@@ -40,10 +40,14 @@ jobs:
         caches:
         - path: repo/.m2
         run:
-          path: ./repo/update.sh
-    - put: storage
-      params:
-        file: jar-file/*.jar
+          path : sh
+              - bash
+              - -ceux
+              - sh repo/update.sh
+          # path: ./repo/update.sh
+    # - put: storage
+    #   params:
+    #     file: jar-file/*.jar
 # jobs:
 #   - name: testjob
 #     plan:
