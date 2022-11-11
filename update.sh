@@ -1,5 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-set -e
-cd repo
-cat test.txt
+set -e -u -
+cd source-code-from-github/
+./mvnw clean package
+cp ./target/*.jar  ../jar-file
